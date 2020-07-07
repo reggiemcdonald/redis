@@ -1,6 +1,8 @@
 FROM golang:latest
 RUN apt-get update
 RUN apt-get install -y build-essential redis-server
+RUN curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh \
+  | sh -s -- -b $(go env GOPATH)/bin v1.27.0
 
 # Update redis config to work with upstart-sysv
 RUN sed -i 's/supervised no/supervised upstart/g' /etc/redis/redis.conf
