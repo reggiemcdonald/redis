@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"github.com/go-redis/redis/v8/internal/util"
 	"strings"
 	"sync"
 	"time"
@@ -162,7 +163,7 @@ func (c *PubSub) closeTheCn(reason error) error {
 		return nil
 	}
 	if !c.closed {
-		internal.Logger.Printf(c.getContext(), "redis: discarding bad PubSub connection: %s", reason)
+		util.Logger.Printf(c.getContext(), "redis: discarding bad PubSub connection: %s", reason)
 	}
 	err := c.closeConn(c.cn)
 	c.cn = nil
@@ -538,12 +539,12 @@ func (c *PubSub) initMsgChan(size int) {
 						<-timer.C
 					}
 				case <-timer.C:
-					internal.Logger.Printf(
+					util.Logger.Printf(
 						c.getContext(),
 						"redis: %s channel is full for %s (message is dropped)", c, pingTimeout)
 				}
 			default:
-				internal.Logger.Printf(c.getContext(), "redis: unknown message type: %T", msg)
+				util.Logger.Printf(c.getContext(), "redis: unknown message type: %T", msg)
 			}
 		}
 	}()
@@ -588,7 +589,7 @@ func (c *PubSub) initAllChan(size int) {
 			case *Message:
 				c.sendMessage(msg, timer)
 			default:
-				internal.Logger.Printf(c.getContext(), "redis: unknown message type: %T", msg)
+				util.Logger.Printf(c.getContext(), "redis: unknown message type: %T", msg)
 			}
 		}
 	}()
@@ -602,7 +603,7 @@ func (c *PubSub) sendMessage(msg interface{}, timer *time.Timer) {
 			<-timer.C
 		}
 	case <-timer.C:
-		internal.Logger.Printf(
+		util.Logger.Printf(
 			c.getContext(),
 			"redis: %s channel is full for %s (message is dropped)", c, pingTimeout)
 	}

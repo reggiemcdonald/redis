@@ -3,6 +3,7 @@ package pool
 import (
 	"context"
 	"errors"
+	"github.com/go-redis/redis/v8/internal/util"
 	"net"
 	"sync"
 	"sync/atomic"
@@ -320,7 +321,7 @@ func (p *ConnPool) popIdle() *Conn {
 
 func (p *ConnPool) Put(cn *Conn) {
 	if cn.rd.Buffered() > 0 {
-		internal.Logger.Printf(context.Background(), "Conn has unread data")
+		util.Logger.Printf(context.Background(), "Conn has unread data")
 		p.Remove(cn, BadConnError{})
 		return
 	}
@@ -458,7 +459,7 @@ func (p *ConnPool) reaper(frequency time.Duration) {
 			}
 			_, err := p.ReapStaleConns()
 			if err != nil {
-				internal.Logger.Printf(context.Background(), "ReapStaleConns failed: %s", err)
+				util.Logger.Printf(context.Background(), "ReapStaleConns failed: %s", err)
 				continue
 			}
 		case <-p.closedCh:

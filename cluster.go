@@ -4,6 +4,7 @@ import (
 	"context"
 	"crypto/tls"
 	"fmt"
+	"github.com/go-redis/redis/v8/internal/util"
 	"math"
 	"net"
 	"runtime"
@@ -1046,7 +1047,7 @@ func (c *ClusterClient) reaper(idleCheckFrequency time.Duration) {
 		for _, node := range nodes {
 			_, err := node.Client.connPool.(*pool.ConnPool).ReapStaleConns()
 			if err != nil {
-				internal.Logger.Printf(c.Context(), "ReapStaleConns failed: %s", err)
+				util.Logger.Printf(c.Context(), "ReapStaleConns failed: %s", err)
 			}
 		}
 	}
@@ -1591,7 +1592,7 @@ func (c *ClusterClient) cmdInfo(name string) *CommandInfo {
 
 	info := cmdsInfo[name]
 	if info == nil {
-		internal.Logger.Printf(c.Context(), "info for cmd=%s not found", name)
+		util.Logger.Printf(c.Context(), "info for cmd=%s not found", name)
 	}
 	return info
 }

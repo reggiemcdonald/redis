@@ -2,6 +2,7 @@ package internal
 
 import (
 	"context"
+	"github.com/go-redis/redis/v8/internal/util"
 
 	"go.opentelemetry.io/otel/api/global"
 	"go.opentelemetry.io/otel/api/metric"
@@ -17,7 +18,7 @@ var (
 func init() {
 	defer func() {
 		if r := recover(); r != nil {
-			Logger.Printf(context.Background(), "Error creating meter github.com/go-redis/redis for Instruments", r)
+			util.Logger.Printf(context.Background(), "Error creating meter github.com/go-redis/redis for Instruments", r)
 		}
 	}()
 
